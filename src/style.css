@@ -69,3 +69,440 @@ nav button {
     gap: 16px;
   }
 }
+
+.recipe-page { width: min(1150px, 92%); max-width: 1150px; margin: 0 auto; }
+.recipe-intro { color: #60736c; margin-bottom: 28px; }
+.recipe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 26px; margin-top: 30px; }
+.recipe-card { background: #fff; border: 1px solid #e0e8df; border-radius: 18px; overflow: hidden; box-shadow: 0 8px 26px rgba(19, 53, 38, .07); }
+.recipe-image { display: block; width: 100%; height: 215px; object-fit: cover; }
+.recipe-image-placeholder { display: flex; align-items: center; justify-content: center; font-size: 64px; background: linear-gradient(120deg, #e0f3e5, #fff0cf); }
+.recipe-card-body { padding: 22px; }
+.recipe-card-body h2 { margin: 0 0 12px; font-size: 1.45rem; }
+.recipe-card-body p { color: #52665d; min-height: 50px; }
+.recipe-card-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; }
+.recipe-link, .recipe-back { color: #197c53; font-weight: 700; text-decoration: none; }
+.recipe-link:hover, .recipe-back:hover { text-decoration: underline; }
+.recipe-back { display: inline-block; margin-bottom: 25px; }
+.recipe-details { max-width: 900px; }
+.recipe-detail-photo { border-radius: 18px; overflow: hidden; margin: 25px 0; }
+.recipe-detail-photo .recipe-image { height: min(440px, 52vw); min-height: 240px; }
+.recipe-time { font-weight: 700; color: #197c53; }
+.recipe-detail-section { background: #fff; border: 1px solid #e0e8df; border-radius: 16px; padding: 24px; margin: 22px 0; }
+.recipe-detail-section h2 { margin-top: 0; }
+.recipe-multiline { white-space: pre-line; line-height: 1.8; }
+@media (max-width: 600px) { .recipe-page { width: 94%; } .recipe-grid { grid-template-columns: 1fr; } .recipe-card-body { padding: 18px; } }
+
+/* RecipeShare — Стъпка 5: Добавяне на рецепта */
+
+.recipe-form {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 35px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.recipe-form h1 {
+  color: #173b2d;
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.recipe-form p {
+  color: #64756e;
+  margin-bottom: 28px;
+}
+
+.recipe-form label {
+  display: block;
+  font-weight: 600;
+  color: #173b2d;
+  margin: 18px 0 8px;
+}
+
+.recipe-form input,
+.recipe-form textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border: 1px solid #cbd5d1;
+  border-radius: 10px;
+  background: white;
+  color: #173b2d;
+  font: inherit;
+}
+
+.recipe-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.recipe-form input:focus,
+.recipe-form textarea:focus {
+  outline: none;
+  border-color: #24855c;
+  box-shadow: 0 0 0 3px rgba(36, 133, 92, 0.12);
+}
+
+.recipe-form button {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 16px;
+  background: #25845b;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.recipe-form button:hover {
+  background: #196b49;
+}
+
+.recipe-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.recipe-error {
+  color: #c62828;
+  margin-top: 16px;
+}
+
+.recipe-success {
+  color: #16834b;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .recipe-form {
+    margin: 20px 15px;
+    padding: 22px;
+  }
+
+  .recipe-form h1 {
+    font-size: 28px;
+  }
+}
+
+
+/* Бутони за редактиране и изтриване */
+
+.recipe-actions {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.recipe-actions .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  padding: 12px 20px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.recipe-actions button:last-child {
+  background: #c62828;
+  color: white;
+}
+
+.recipe-actions button:last-child:hover {
+  background: #a91f1f;
+}
+
+.recipe-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==================================
+   MY RECIPES — STEP 6
+================================== */
+
+.my-recipes-empty {
+  margin-top: 35px;
+  padding: 40px 25px;
+  text-align: center;
+  background: #f4f8f5;
+  border: 1px solid #dce8df;
+  border-radius: 16px;
+}
+
+.my-recipes-empty h2 {
+  color: #173b2d;
+  margin-bottom: 12px;
+}
+
+.my-recipes-empty p {
+  color: #64756e;
+  margin-bottom: 24px;
+}
+
+.my-recipe-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.my-recipe-buttons a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.my-recipe-buttons a:hover {
+  text-decoration: underline;
+}
+
+/* ==================================
+   STEP 7 - RECIPE COMMENTS
+================================== */
+
+.recipe-comments {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid #dce8df;
+}
+
+.recipe-comments h2 {
+  margin-bottom: 24px;
+  color: #173b2d;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.comment-form label {
+  font-weight: 600;
+  color: #173b2d;
+}
+
+.comment-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  font: inherit;
+  border: 1px solid #cbd5d1;
+  border-radius: 10px;
+  resize: vertical;
+}
+
+.comment-form .button {
+  align-self: flex-start;
+  width: auto;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comment-card {
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e1e8e3;
+  border-radius: 14px;
+}
+
+.comment-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.comment-meta strong {
+  color: #173b2d;
+}
+
+.comment-meta time {
+  color: #738079;
+  font-size: 0.9rem;
+}
+
+.comment-card p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.comment-delete {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid #c62828;
+  border-radius: 8px;
+  background: transparent;
+  color: #c62828;
+  cursor: pointer;
+}
+
+.comment-delete:hover {
+  background: #fff0f0;
+}
+
+.comment-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==================================
+   STEP 8 - SEARCH AND FILTERS
+================================== */
+
+.recipe-filters {
+  margin: 36px 0;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #dfe8e1;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.recipe-filters h2 {
+  margin: 0 0 22px;
+  color: #173b2d;
+  font-size: 24px;
+}
+
+.recipe-filters-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 18px;
+}
+
+.recipe-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.recipe-filter-field label {
+  color: #254738;
+  font-weight: 600;
+}
+
+.recipe-filter-field input,
+.recipe-filter-field select {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  border: 1px solid #cddbd1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #173b2d;
+  font: inherit;
+}
+
+.recipe-filter-field input:focus,
+.recipe-filter-field select:focus {
+  outline: 2px solid #258558;
+  outline-offset: 2px;
+}
+
+.recipe-filter-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.recipe-filter-bottom p {
+  margin: 0;
+}
+
+.recipe-clear-filters {
+  padding: 10px 16px;
+  border: 1px solid #258558;
+  border-radius: 9px;
+  background: transparent;
+  color: #20774d;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.recipe-clear-filters:hover {
+  background: #edf8f1;
+}
+
+.recipe-no-results {
+  padding: 35px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 16px;
+}
+
+.recipe-no-results h2 {
+  color: #173b2d;
+}
+
+@media (max-width: 800px) {
+  .recipe-filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-filters {
+    padding: 20px;
+  }
+}
+
+/* STEP 9 - FAVORITES */
+
+.favorite-control {
+  margin: 16px 0;
+}
+
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: 1px solid #258558;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #20774d;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.favorite-button:hover {
+  background: #edf8f1;
+}
+
+.favorite-button.is-favorite {
+  background: #e8f6ec;
+  color: #166534;
+  border-color: #166534;
+}
+
+.favorite-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.favorite-control .recipe-error {
+  display: block;
+  margin-top: 8px;
+}
