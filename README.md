@@ -23,7 +23,7 @@ RecipeShare is a cooking recipe sharing platform built with React and Supabase.
 
 Visitors can explore recipes, read cooking instructions and discover new meal ideas. Registered users can publish recipes, manage their own content, leave comments and save favorite recipes.
 
-The application uses a real database, user authentication, protected routes and a responsive interface.
+The application uses a real remote database, user authentication, protected routes and a responsive interface.
 
 <h2>Technology Stack</h2>
 
@@ -42,7 +42,7 @@ The application uses a real database, user authentication, protected routes and 
 
 <ul>
   <li>User registration, login and logout</li>
-  <li>Password recovery</li>
+  <li>Email confirmation and password recovery</li>
   <li>Public recipe catalog</li>
   <li>Recipe search, filtering and sorting</li>
   <li>Individual recipe details</li>
@@ -52,6 +52,7 @@ The application uses a real database, user authentication, protected routes and 
   <li>Favorite recipes</li>
   <li>User profile</li>
   <li>Protected routes and author permissions</li>
+  <li>Database validation and access policies</li>
   <li>Responsive interface</li>
 </ul>
 
@@ -59,7 +60,14 @@ The application uses a real database, user authentication, protected routes and 
 
 <h3>Requirements</h3>
 
-To run the project locally, you need Node.js, npm and a configured Supabase project.
+To run the project locally, you need:
+
+<ul>
+  <li>Node.js</li>
+  <li>npm</li>
+  <li>A configured Supabase project</li>
+  <li>The required database tables and access policies</li>
+</ul>
 
 <h3>Installation</h3>
 
@@ -82,6 +90,8 @@ Add your Supabase configuration:
     VITE_SUPABASE_URL=your_supabase_project_url
     VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
+Use the environment variable names expected by your application configuration.
+
 5. Start the development server.
 
     npm run dev
@@ -90,16 +100,22 @@ Open the local address displayed in the terminal.
 
 The Supabase database must contain the required tables and access policies before all application features can work.
 
-Never commit .env.local or private service-role keys to GitHub.
+Never commit .env.local, database passwords or service-role keys to GitHub.
 
 <h3>Production Build</h3>
 
     npm run build
 
+The production build is generated in the dist directory.
+
 <h3>Cloudflare Deployment</h3>
 
     npm run build
     npx wrangler deploy
+
+The application uses Cloudflare Workers to serve the built React application.
+
+SPA fallback handling allows React Router pages to load when opened directly or refreshed.
 
 Production application:
 
@@ -117,7 +133,9 @@ Application Category: Recipe Sharing Platform
 
 RecipeShare is a web application designed for sharing and discovering cooking recipes.
 
-Users can browse recipes, view ingredients and cooking instructions, create their own recipes and interact with other users through comments and favorites.
+Visitors can browse recipes, view ingredients and cooking instructions, and explore available content.
+
+Authenticated users can create and manage their own recipes and interact with other recipes through comments and favorites.
 
 The main goal is to provide a simple and accessible platform for sharing cooking ideas.
 
@@ -155,21 +173,51 @@ Logged-in users can:
 
 Recipe editing and deletion are restricted to the recipe author.
 
+<h3>Ownership Protection</h3>
+
+RecipeShare checks recipe ownership before allowing access to editing functionality.
+
+During testing, a second authenticated user attempted to open the editing URL of a recipe created by another account.
+
+The application displayed the message:
+
+"Рецептата не е намерена или не е твоя."
+
+The editing form was not available to the second user.
+
+This confirms that the interface restricts unauthorized editing access. Database-level access is additionally controlled through Supabase policies and should be verified independently.
+
 <h2>3. Authentication and Session Handling</h2>
 
 The application uses Supabase Authentication.
 
 When RecipeShare starts, the authentication provider checks for an existing user session.
 
-Registration requires an email address, password and password confirmation. Depending on the Supabase configuration, email confirmation may be required.
+<h3>Registration</h3>
 
-During login, Supabase validates the submitted credentials. After successful authentication, the application updates the current user state.
+Registration requires an email address, password and password confirmation.
 
-Logout ends the active Supabase session.
+Supabase may require email confirmation before the new account can be used.
+
+The production Site URL and allowed redirect URLs are configured so email confirmation returns users to the deployed RecipeShare application.
+
+<h3>Login</h3>
+
+During login, Supabase validates the submitted credentials.
+
+After successful authentication, the application updates the current user state and enables access to protected functionality.
+
+<h3>Logout</h3>
+
+Logout ends the active Supabase session and returns the interface to its guest state.
+
+<h3>Session Persistence</h3>
 
 Authentication state is shared through React Context.
 
 Supabase manages session persistence, allowing users to remain authenticated after refreshing the page while their session is valid.
+
+This behavior was tested successfully in the deployed application.
 
 <h2>4. Routing Structure</h2>
 
@@ -197,23 +245,33 @@ PrivateRoute redirects unauthenticated users to the login page.
 
 The :id URL parameter identifies a specific recipe for viewing or editing.
 
+Directly opening and refreshing a recipe details URL was tested successfully in production.
+
 <h2>5. List to Details Flow</h2>
 
-The recipe catalog retrieves recipe records from Supabase and displays them as a collection of recipe cards.
+The recipe catalog retrieves recipe records from Supabase and displays them as recipe cards.
 
-Users can browse recipes, search for matching content, apply filters and change the sorting order.
+Users can:
+
+<ul>
+  <li>Browse available recipes</li>
+  <li>Search for matching recipes</li>
+  <li>Apply available filters</li>
+  <li>Change the sorting order</li>
+  <li>Open individual recipe details</li>
+</ul>
 
 Selecting a recipe opens its details page.
 
-The application reads the recipe ID from the URL and retrieves the corresponding database record.
+React Router reads the recipe ID from the URL, and the application retrieves the corresponding record from Supabase.
 
-The details view presents recipe information such as its title, description, ingredients, preparation instructions, cooking time and image when available.
+The details page presents information such as the recipe title, description, ingredients, preparation instructions, cooking time and image when available.
 
 Authenticated users can interact with recipes through comments and favorites.
 
 <h2>6. Data Source and Backend</h2>
 
-RecipeShare uses Supabase as a real backend service.
+RecipeShare uses Supabase as a hosted backend service.
 
 Supabase provides:
 
@@ -224,18 +282,26 @@ Supabase provides:
   <li>Row Level Security policies</li>
 </ul>
 
-<h3>Database Tables</h3>
+<h3>Database Resources</h3>
 
 <table>
-  <tr><th>Table</th><th>Purpose</th></tr>
+  <tr><th>Resource</th><th>Purpose</th></tr>
   <tr><td>recipes</td><td>Stores recipes and their associated information</td></tr>
-  <tr><td>recipe_comments</td><td>Stores comments associated with recipes</td></tr>
-  <tr><td>recipe_favorites</td><td>Stores favorite recipes for individual users</td></tr>
+  <tr><td>Comments collection</td><td>Stores comments associated with recipes</td></tr>
+  <tr><td>Favorites collection</td><td>Stores favorite recipes for individual users</td></tr>
 </table>
 
-The recipes table contains fields for recipe identification, ownership, title, description, ingredients, instructions, preparation time, image URL and creation date.
+The exact comments and favorites table names should match the current Supabase schema.
+
+The recipes table contains fields for recipe identification, ownership, title, description, ingredients, instructions, cooking time, image URL and creation date.
 
 Database access policies help protect user-owned data and restrict unauthorized operations.
+
+<h3>Data Persistence</h3>
+
+Recipe records are stored remotely in Supabase rather than in hardcoded application arrays.
+
+Newly created recipes and edits remain available after refreshing the page.
 
 <h2>7. Data Operations (CRUD)</h2>
 
@@ -243,9 +309,11 @@ The main CRUD resource is the recipe.
 
 <h3>Create</h3>
 
-Authenticated users open the Create Recipe page, complete the recipe form and submit the information.
+Authenticated users open the Create Recipe page, complete the form and submit the information.
 
-After validation, a new recipe record is inserted into Supabase and associated with the current user.
+A valid recipe is inserted into the Supabase recipes table and associated with the current user.
+
+Creating a recipe and viewing it in My Recipes was tested successfully.
 
 <h3>Read</h3>
 
@@ -255,13 +323,17 @@ Recipe data is retrieved from Supabase and displayed in the catalog, recipe deta
 
 The recipe author can open the editing page and modify existing recipe information.
 
-After a successful update, the modified data is stored in Supabase and displayed in the application.
+After a successful update, the modified data is stored in Supabase.
+
+Editing a recipe and refreshing the page was tested successfully.
 
 <h3>Delete</h3>
 
 The recipe author can delete their own recipe.
 
-The application removes the corresponding database record and updates the user interface after the operation succeeds.
+The application removes the corresponding database record and updates the interface after successful deletion.
+
+Deleting a recipe and confirming its absence after refreshing was tested successfully.
 
 <h3>Additional Operations</h3>
 
@@ -276,7 +348,7 @@ RecipeShare includes the following forms:
 <ul>
   <li>Registration</li>
   <li>Login</li>
-  <li>Password reset</li>
+  <li>Password recovery and reset</li>
   <li>Create Recipe</li>
   <li>Edit Recipe</li>
   <li>Recipe comment</li>
@@ -284,7 +356,7 @@ RecipeShare includes the following forms:
 
 Form values are managed using React state.
 
-Validation examples:
+<h3>Authentication Validation</h3>
 
 <table>
   <tr><th>Field</th><th>Validation</th></tr>
@@ -292,13 +364,47 @@ Validation examples:
   <tr><td>Registration password</td><td>Required, minimum 6 characters</td></tr>
   <tr><td>Password confirmation</td><td>Required and must match the password</td></tr>
   <tr><td>New password during recovery</td><td>Minimum 8 characters</td></tr>
-  <tr><td>Recipe title</td><td>Required</td></tr>
-  <tr><td>Recipe content</td><td>Required fields must contain valid information</td></tr>
 </table>
 
-Invalid form submissions display feedback to the user.
+<h3>Recipe Database Validation</h3>
 
-During asynchronous submissions, buttons can be disabled to prevent repeated requests.
+The provided Supabase SQL schema defines the following constraints for recipe records:
+
+<table>
+  <tr><th>Field</th><th>Validation Rule</th></tr>
+  <tr><td>Title</td><td>Between 3 and 100 characters</td></tr>
+  <tr><td>Description</td><td>Between 10 and 2000 characters</td></tr>
+  <tr><td>Ingredients</td><td>At least 3 characters</td></tr>
+  <tr><td>Cooking instructions</td><td>At least 10 characters</td></tr>
+  <tr><td>Cooking time</td><td>Between 1 and 1440 minutes</td></tr>
+  <tr><td>Image URL</td><td>Optional</td></tr>
+</table>
+
+These constraints help prevent invalid recipe information from being stored in the database.
+
+<h3>Validation Test</h3>
+
+During testing, an attempt to publish a recipe with an invalid description was rejected by Supabase.
+
+The database returned the following error:
+
+    new row for relation "recipes" violates check constraint "recipes_description_check"
+
+After the description was corrected, the recipe was successfully published.
+
+This confirms that the database rejects recipe descriptions that violate its constraints.
+
+<h3>Current Validation Feedback</h3>
+
+The application currently displays a technical database error when the description constraint is violated.
+
+Improving client-side validation and displaying more user-friendly messages is a planned enhancement.
+
+The intended improvement is to validate the input before sending the request and display messages such as:
+
+"Описанието трябва да съдържа между 10 и 2000 символа."
+
+The database constraints will remain enabled to provide an additional layer of validation.
 
 <h2>9. React-Specific Techniques</h2>
 
@@ -308,7 +414,7 @@ useState manages form values, loaded recipes, loading indicators, errors and oth
 
 useEffect handles side effects such as loading recipes, checking the authentication session and subscribing to authentication events.
 
-useContext provides access to the shared authentication state.
+useContext provides access to shared authentication state.
 
 React Router hooks support navigation and parameterized routes.
 
@@ -318,15 +424,15 @@ When the catalog mounts, it starts retrieving recipes from Supabase.
 
 After the data arrives, React updates the component state and renders the available recipes.
 
-When the component unmounts, effect cleanup prevents outdated requests from updating the component.
+When the component unmounts, effect cleanup is used to avoid outdated operations affecting the component.
 
 The authentication provider also cleans up its authentication subscription.
 
 <h3>Context API</h3>
 
-AuthContext shares the current user, authentication loading state and logout function.
+AuthContext shares the current user, authentication loading state and logout functionality.
 
-This information is consumed by the navigation header, route guards and other components that require authentication information.
+This information is consumed by navigation components, route guards and other components requiring authentication information.
 
 <h3>Styling</h3>
 
@@ -360,6 +466,14 @@ Supabase requests are handled asynchronously.
 
 The application uses loading indicators and error messages to provide feedback when requests are pending or fail.
 
+<h3>Database Constraint Errors</h3>
+
+Supabase rejects recipe records that violate database constraints.
+
+A description validation error was observed during testing. The recipe was successfully published after correcting the invalid input.
+
+Improving the clarity of database error messages is a planned enhancement.
+
 <h3>Empty and Missing Data</h3>
 
 The interface accounts for situations such as an empty recipe catalog, missing recipes, an empty favorites collection or a user without created recipes.
@@ -370,7 +484,11 @@ Unknown routes display a Not Found page.
 
 Guests cannot access protected recipe management functionality.
 
-Recipe authorship checks and database access policies restrict editing and deletion of recipes owned by other users.
+The application restricts editing functionality to the recipe author.
+
+A test using two different authenticated accounts confirmed that the second account could not open the editing form for another user's recipe.
+
+Supabase Row Level Security policies provide database-level access control, which should also be verified independently.
 
 <hr>
 
@@ -394,5 +512,5 @@ https://github.com/vlastomar/vlastomar-js-recipes
 <hr>
 
 <div align="center">
-  <p>RecipeShare · SoftUni React Exam Project · 2026</p>
+  <p>RecipeShare · Vladimir Marinov: SoftUni React Exam Project · 2026</p>
 </div>
