@@ -7,14 +7,17 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [sending, setSending] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
 
     setError('');
-    setLoading(true);
+    setMessage('');
+    setSaving(true);
 
     try {
       const { error } =
@@ -29,7 +32,42 @@ export default function Login() {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setSaving(false);
+    }
+  }
+
+  async function handleRecovery() {
+    setError('');
+    setMessage('');
+
+    if (!email.trim()) {
+      setError(
+        'Първо въведи имейла си.'
+      );
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      const { error } =
+        await supabase.auth.resetPasswordForEmail(
+          email.trim(),
+          {
+            redirectTo:
+              `${window.location.origin}/reset-password`
+          }
+        );
+
+      if (error) throw error;
+
+      setMessage(
+        'Ако адресът е регистриран, ще получиш имейл за нова парола.'
+      );
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSending(false);
     }
   }
 
@@ -71,32 +109,40 @@ export default function Login() {
         </div>
 
         {error && (
-          <p className="recipe-error" role="alert">
-            {error}
-          </p>
+          <p role="alert">{error}</p>
+        )}
+
+        {message && (
+          <p role="status">{message}</p>
         )}
 
         <button
           className="button"
           type="submit"
-          disabled={loading}
+          disabled={saving}
         >
-          {loading ? 'Влизане...' : 'Вход'}
+          {saving
+            ? 'Влизане...'
+            : 'Вход'}
         </button>
       </form>
 
       <p>
-        <Link to="/forgot-password">
-          Забравена парола?
+        Нямаш профил?{' '}
+        <Link to="/register">
+          Регистрация
         </Link>
       </p>
 
-      <p>
-        Нямаш профил?{' '}
-        <Link to="/register">
-          Регистрирай се
-        </Link>
-      </p>
+      <button
+        type="button"
+        onClick={handleRecovery}
+        disabled={sending}
+      >
+        {sending
+          ? 'Изпращане...'
+          : 'Забравена парола?'}
+      </button>
     </main>
   );
 }
