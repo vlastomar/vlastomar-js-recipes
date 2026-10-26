@@ -88,7 +88,7 @@ To run the project locally, you need:
 Add your Supabase configuration:
 
     VITE_SUPABASE_URL=your_supabase_project_url
-    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 
 Use the environment variable names expected by your application configuration.
 
@@ -287,11 +287,9 @@ Supabase provides:
 <table>
   <tr><th>Resource</th><th>Purpose</th></tr>
   <tr><td>recipes</td><td>Stores recipes and their associated information</td></tr>
-  <tr><td>Comments collection</td><td>Stores comments associated with recipes</td></tr>
-  <tr><td>Favorites collection</td><td>Stores favorite recipes for individual users</td></tr>
+  <tr><td>recipe_comments</td><td>Stores comments associated with recipes</td></tr>
+  <tr><td>recipe_favorites</td><td>Stores favorite recipes for individual users</td></tr>
 </table>
-
-The exact comments and favorites table names should match the current Supabase schema.
 
 The recipes table contains fields for recipe identification, ownership, title, description, ingredients, instructions, cooking time, image URL and creation date.
 
