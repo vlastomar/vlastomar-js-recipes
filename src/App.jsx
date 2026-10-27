@@ -43,8 +43,6 @@ function GuestRoute({ children }) {
 }
 
 
-// ROUTES
-
 export default function App() {
   return (
     <>
